@@ -59,7 +59,7 @@ sed -i 's/ao/c/g' ciku.txt
 sed -i 's/ang/h/g' ciku.txt
 sed -i 's/an/j/g' ciku.txt
 sed -i 's/ai/d/g' ciku.txt
-sed -i 's/ eer / er /g' ciku.txt
+sed -i 's/ eer/ er/g' ciku.txt
 sed -i 's/zh/v/g' ciku.txt
 sed -i 's/sh/u/g' ciku.txt
 sed -i 's/ch/i/g' ciku.txt
