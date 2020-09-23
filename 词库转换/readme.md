@@ -42,9 +42,9 @@ sed -i 's/uan/r/g' ciku.txt
 sed -i 's/uai/k/g' ciku.txt
 sed -i 's/ua/x/g' ciku.txt
 sed -i 's/ou/z/g' ciku.txt
+sed -i 's/iong/s/g' ciku.txt
 sed -i 's/ong/s/g' ciku.txt
 sed -i 's/iu/q/g' ciku.txt
-sed -i 's/iong/s/g' ciku.txt
 sed -i 's/ing/k/g' ciku.txt
 sed -i 's/in/b/g' ciku.txt
 sed -i 's/ie/p/g' ciku.txt
