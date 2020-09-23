@@ -63,6 +63,9 @@ sed -i 's/ eer/ er/g' ciku.txt
 sed -i 's/zh/v/g' ciku.txt
 sed -i 's/sh/u/g' ciku.txt
 sed -i 's/ch/i/g' ciku.txt
+sed -i 's/ v / zh /g' ciku.txt
+sed -i 's/ u / sh /g' ciku.txt
+sed -i 's/ i / ch /g' ciku.txt
 
 ```
 
