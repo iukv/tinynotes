@@ -97,3 +97,95 @@ demo@wsl-16:~$ tldr grep
 
 demo@wsl-17:~$
 ```
+
+## sort
+
+```bash
+demo@wsl-2:~$ sort --help
+Usage: sort [OPTION]... [FILE]...
+  or:  sort [OPTION]... --files0-from=F
+Write sorted concatenation of all FILE(s) to standard output.
+
+With no FILE, or when FILE is -, read standard input.
+```
+
+
+```bash
+demo@wsl-1:~$ tldr sort
+
+  sort
+
+  Sort lines of text files.
+  More information: https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html.
+
+# 默认 升序
+  - Sort a file in ascending order:
+    sort path/to/file
+# -r 降序
+  - Sort a file in descending order:
+    sort --reverse path/to/file
+# -i 忽略大小写
+  - Sort a file in case-insensitive way:
+    sort --ignore-case path/to/file
+# -n 数字顺序 !!! 非字母顺序。比如 文件夹排序 1_dir 21_dir 31_dir 111_dir 121_dir 131_dir 21_dir1 221_dir 231_dir
+  - Sort a file using numeric rather than alphabetic order:
+    sort --numeric-sort path/to/file
+# -t '分隔符'，默认是 tab .  -k 排序区间域
+  - Sort /etc/passwd by the 3rd field of each line numerically, using ":" as a field separator:
+    sort --field-separator=: --key=3n /etc/passwd
+    例 cat /etc/passwd | sort -t ':' -k 3   排序涉及第三区域及其后的内容
+       cat /etc/passwd | sort -t ':' -k 3,3 单纯以第三区域内容排序
+# 像同的内容，只出现一次
+  - Sort a file preserving only unique lines:
+    sort --unique path/to/file
+# -o 输出到文件
+  - Sort a file, printing the output to the specified output file (can be used to sort a file in-place):
+    sort --output=path/to/file path/to/file
+# ？？？
+  - Sort numbers with exponents:
+    sort --general-numeric-sort path/to/file
+# -b 忽略前面空白部分 ignore leading blanks
+# -f 忽略大小写 fold lower case to upper case characters
+# -i --ignore-nonprinting    consider only printable characters
+demo@wsl-2:~$
+```
+
+## uniq 
+
+```bash
+Usage: uniq [OPTION]... [INPUT [OUTPUT]]
+Filter adjacent matching lines from INPUT (or standard input),
+writing to OUTPUT (or standard output).
+
+With no options, matching lines are merged to the first occurrence.
+```
+
+```bash
+demo@wsl-4:~$ tldr uniq
+
+  uniq
+
+  Output the unique lines from the given input or file.
+  Since it does not detect repeated lines unless they are adjacent, we need to sort them first. 只能检测到相邻的相同行，因此需要先排序
+# sort 过程，空行是也参与排序的
+  - Display each line once:
+    sort file | uniq
+# 只显示没有重复的行
+  - Display only unique lines:
+    sort file | uniq -u
+# 只显示有重复的行 
+  - Display only duplicate lines:
+    sort file | uniq -d
+# 上面两个输出结果的交是全集
+
+# 在每一行的行首显示出现次数
+  - Display number of occurrences of each line along with that line:
+    sort file | uniq -c
+
+  - Display number of occurrences of each line, sorted by the most frequent:
+    sort file | uniq -c | sort -nr
+
+
+demo@wsl-5:~$
+```
+
