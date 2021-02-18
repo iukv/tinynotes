@@ -189,3 +189,42 @@ demo@wsl-4:~$ tldr uniq
 demo@wsl-5:~$
 ```
 
+## wc
+
+```bash
+demo@wsl-13:~$ tldr wc
+
+  wc
+
+  Count lines, words, or bytes.
+
+  - Count lines in file:
+    wc -l file
+
+  - Count words in file:
+    wc -w file
+
+  - Count characters (bytes) in file:
+    wc -c file
+
+  - Count characters in file (taking multi-byte character sets into account):
+    wc -m file
+
+  - Use standard input to count lines, words and characters (bytes) in that order:
+    find . | wc
+
+
+demo@wsl-14:~$
+```
+
+``` bash
+demo@wsl-18:~$ tldr wc | wc ; tldr wc | wc -l; tldr wc | wc -w ; tldr wc | wc -c ; tldr wc | wc -m
+     21      63     371
+21
+63
+371
+371
+demo@wsl-19:~$
+```
+
+
