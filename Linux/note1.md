@@ -236,3 +236,43 @@ demo@wsl-19:~$
 ![tee 的工作流程示意圖](https://linux.vbird.org/linux_basic/centos7/0320bash//0320bash_5.png "tee 的工作流程示意圖")
 
 圖10.6.2、tee 的工作流程示意圖
+
+```bash
+demo@wsl-27:~$ tldr tee
+
+  tee
+
+  Read from standard input and write to standard output and files (or commands).
+
+  - Copy standard input to each FILE, and also to standard output:
+    echo "example" | tee FILE
+
+  - Append to the given FILEs, do not overwrite:
+    echo "example" | tee -a FILE
+    
+   [dmtsai@study ~]$ ls -l /home | tee ~/homefile | more
+    # 這個範例則是將 ls 的資料存一份到 ~/homefile ，同時螢幕也有輸出訊息！
+
+  - Print standard input to the terminal, and also pipe it into another program for further processing:
+    echo "example" | tee /dev/tty | xargs printf "[%s]"
+# 
+  - Create a directory called "example", count the number of characters in "example" and write "example" to the terminal:
+    echo "example" | tee >(xargs mkdir) >(wc -c)
+
+
+demo@wsl-28:~$
+```
+
+info tee
+
+>  `wget -O - https://example.com/dvd.iso \
+       | tee >(sha1sum > dvd.sha1) > dvd.iso`
+       
+> `wget -O - https://example.com/dvd.iso \
+       | tee dvd.iso | sha1sum > dvd.sha1`
+       
+ > `wget -O - https://example.com/dvd.iso \
+       | tee >(sha1sum > dvd.sha1) \
+             >(md5sum > dvd.md5) \
+       > dvd.iso`
+
