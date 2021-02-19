@@ -246,7 +246,14 @@ demo@wsl-27:~$ tldr tee
 
   - Copy standard input to each FILE, and also to standard output:
     echo "example" | tee FILE
-
+    # 同时导入到多个文件 （若文件包存在会创建）：
+    echo "example" | tee FILE1 FILE2 FILE3 
+    
+    # 从键盘同时输入到多个文件
+    tee file1 file2 file3
+      然后会同 cat file1 一样，从键盘输入。
+    
+# -a 追加
   - Append to the given FILEs, do not overwrite:
     echo "example" | tee -a FILE
     
@@ -265,14 +272,188 @@ demo@wsl-28:~$
 
 info tee
 
->  `wget -O - https://example.com/dvd.iso \
-       | tee >(sha1sum > dvd.sha1) > dvd.iso`
+```bash
+$  wget -O - https://example.com/dvd.iso \
+       | tee >(sha1sum > dvd.sha1) > dvd.iso
        
-> `wget -O - https://example.com/dvd.iso \
-       | tee dvd.iso | sha1sum > dvd.sha1`
+$ wget -O - https://example.com/dvd.iso \
+       | tee dvd.iso | sha1sum > dvd.sha1
        
- > `wget -O - https://example.com/dvd.iso \
+$ wget -O - https://example.com/dvd.iso \
        | tee >(sha1sum > dvd.sha1) \
              >(md5sum > dvd.md5) \
-       > dvd.iso`
+       > dvd.iso
+```
+
+
+## tr
+
+```bash
+
+  tr
+# 字符替换、删除、转换：基于单个字符或字符串。
+  Translate characters: run replacements based on single characters and character sets.
+  
+# 从文件输入，再输出到屏幕
+  - Replace all occurrences of a character in a file, and print the result:
+    tr find_character replace_character < filename
+
+# 从管道输入
+  - Replace all occurrences of a character from another command's output:
+    echo text | tr find_character replace_character
+
+# 将第一个字符集的每个字符映射到第二个字符集的对应字符： 
+  - Map each character of the first set to the corresponding character of the second set:
+    tr 'abcd' 'jkmn' < filename
+    last | tr '[a-z]' '[A-Z]' #单引号可省略
+# -d 删除特定字符    
+  - Delete all occurrences of the specified set of characters from the input:
+    tr -d 'input_characters' < filename
+
+  - Compress a series of identical characters to a single character:
+    tr -s 'input_characters' < filename
+
+# tr 的搜寻方式兼容正则表达式， 如
+  - Translate the contents of a file to upper-case:
+    tr "[:lower:]" "[:upper:]" < filename
+    
+  - Strip out non-printable characters from a file:
+    tr -cd "[:print:]" < filename
+    
+    ```
+    
+## col
+过滤控制字符
+
+```bash
+
+[dmtsai@study ~]$ col [-xb]
+選項與參數：
+-x  ：將 tab 鍵轉換成對等的空白鍵
+
+範例一：利用 cat -A 顯示出所有特殊按鍵，最後以 col 將 [tab] 轉成空白
+[dmtsai@study ~]$ cat -A /etc/man_db.conf  <==此時會看到很多 ^I 的符號，那就是 tab
+[dmtsai@study ~]$ cat /etc/man_db.conf | col -x | cat -A | more
+
+```
+
+> 嘿嘿！如此一來， [tab] 按鍵會被取代成為空白鍵，輸出就美觀多了！
+> 雖然 col 有他特殊的用途，不過，很多時候，他可以用來簡單的處理將 [tab] 按鍵取代成為空白鍵！ 例如上面的例子當中，如果使用 cat -A 則 [tab] 會以 ^I 來表示。 但經過 col -x 的處理，則會將 [tab] 取代成為對等的空白鍵！
+> 
+
+## join
+
+```bash
+demo@wsl-6:~$ tldr join
+
+  join
+  接合后的文件，其参照栏位为合并成一个并出现在行首。
+  
+# 接合两个经过sort整理过的文件
+  Join lines of two **sorted** files on a common field.
+  
+# 默认以第一栏位识别
+  - Join two files on the first (default) field:
+    join file1 file2
+    
+# 自定义栏位的分隔符
+  - Join two files using a comma (instead of a space) as the field separator:
+    join -t ',' file1 file2
+    
+# 分别自定义两个文件进行接合所参照的栏位
+  - Join field3 of file1 with field1 of file2:
+    join -1 3 -2 1 file1 file2
+
+  - Produce a line for each unpairable line for file1:
+    join -a 1 file1 file2
+
+
+demo@wsl-7:~$
+```
+
+## paste
+
+```bash
+demo@wsl-8:~$ tldr paste
+
+  paste
+  Merge lines of files.
+  
+Usage: paste [OPTION]... [FILE]...
+Write lines consisting of the sequentially corresponding lines from
+each FILE, separated by TABs, to standard output.
+
+With no FILE, or when FILE is -, read standard input.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -d, --delimiters=LIST   reuse characters from LIST instead of TABs
+  -s, --serial            paste one file at a time instead of in parallel 一次只读取一个文件的，第一个文件结束后，读取第二个文件
+  -z, --zero-terminated    line delimiter is NUL, not newline
+      --help     display this help and exit
+      --version  output version information and exit
+
+
+# 把单格文件的所有行合并为一行。
+  # 默认以tab 分隔
+  - Join all the lines into a single line, using TAB as delimiter:
+    paste -s file
+  # 自定义分隔符
+  - Join all the lines into a single line, using the specified delimiter:
+    paste -s -d delimiter file
+  # 合并两个文件 直接左右并列
+  - Merge two files side by side, each in its column, using TAB as delimiter:
+    paste file1 file2
+    
+  - Merge two files side by side, each in its column, using the specified delimiter:
+    paste -d delimiter file1 file2
+  # 以 \n（换行） 作为分隔符。如交替列印 控制字符要用引号括起来。
+  - Merge two files, with lines added alternatively:
+    paste -d '\n' file1 file2
+
+
+demo@wsl-9:~$
+```
+
+另外请 参阅 info paste
+
+
+## expand
+
+```bash
+demo@wsl-41:~$ tldr expand
+
+  expand
+
+  Convert tabs to spaces. #默认8个空格
+
+  - Convert tabs in each file to spaces, writing to standard output:
+    expand file
+
+  - Convert tabs to spaces, reading from standard input:
+    expand
+    
+# 只转换行首的tab
+  - Do not convert tabs after non blanks:
+    expand -i file
+    
+# 自定义空格个数
+  - Have tabs a certain number of characters apart, not 8:
+    expand -t=number file
+
+# ????
+  - Use a comma separated list of explicit tab positions:
+    expand -t=1,4,6
+
+
+demo@wsl-42:~$
+```
+
+##xargs 
+
+[vbird](https://linux.vbird.org/linux_basic/centos7/0320bash.php#pipe:~:text=10.6.6%20%E5%8F%83%E6%95%B8,%E6%8F%9B%EF%BC%9A%20xargs)
+
+
+```
+
+
 
