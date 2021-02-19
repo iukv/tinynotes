@@ -34,6 +34,10 @@ demo@wsl-2:~$
 ```bash
 demo@wsl-9:~$ last
 
+
+
+## 
+
 wtmp begins Thu Oct  1 12:32:27 2020
 demo@wsl-10:~$ last | cut -d ' ' -f 3
 
@@ -535,6 +539,350 @@ word$
 -a 將 binary 檔案以 text 檔案的方式搜尋資料
 -H 行首显示文件
 --color=auto 突出显示匹配结果
+```
+
+## sed
+
+[ref](https://linux.vbird.org/linux_basic/centos7/0330regularex.php#sed)
+
+```bash
+demo@wsl-2:~$ tldr sed
+
+  sed
+  sed [-nefr] [動作]
+
+-n  ：使用安靜(silent)模式。在一般 sed 的用法中，所有來自 STDIN 的資料一般都會被列出到螢幕上。
+      但如果加上 -n 參數後，則只有經過 sed 特殊處理的那一行(或者動作)才會被列出來。
+-e  ：直接在指令列模式上進行 sed 的動作編輯；
+-f  ：直接將 sed 的動作寫在一個檔案內， -f filename 則可以執行 filename 內的 sed 動作；
+-r  ：sed 的動作支援的是延伸型正規表示法的語法。(預設是基礎正規表示法語法)
+-i  ：直接修改讀取的檔案內容，而不是由螢幕輸出。
+
+動作說明：  [n1[,n2]]function
+n1, n2 ：不見得會存在，一般代表『選擇進行動作的行數』，舉例來說，如果我的動作
+         是需要在 10 到 20 行之間進行的，則『 10,20[動作行為] 』
+
+function 有底下這些咚咚：
+a   ：新增， a 的後面可以接字串，而這些字串會在新的一行出現(目前的下一行)～
+c   ：取代， c 的後面可以接字串，這些字串可以取代 n1,n2 之間的行！
+d   ：刪除，因為是刪除啊，所以 d 後面通常不接任何咚咚；
+i   ：插入， i 的後面可以接字串，而這些字串會在新的一行出現(目前的上一行)；
+p   ：列印，亦即將某個選擇的資料印出。通常 p 會與參數 sed -n 一起運作～
+s   ：取代，可以直接進行取代的工作哩！通常這個 s 的動作可以搭配正規表示法！
+      例如 1,20s/old/new/g 就是啦！
+      
+  Edit text in a scriptable manner.
+
+  - Replace the first occurrence of a regular expression in each line of a file, and print the result:
+    sed 's/regex/replace/' filename
+    
+  - Replace all occurrences of an extended regular expression in a file, and print the result:
+    sed -r '3,5s/regex/replace/g' filename  # 3到5行取代   #  -E, -r, --regexp-extended
+
+  - Replace all occurrences of a string in a file, overwriting the file (i.e. in-place):
+    sed -i 's/find/replace/g' filename # -i 直接编辑原文件
+
+  - Replace only on lines matching the line pattern:
+    sed '/line_pattern/s/find/replace/' filename   # 匹配特定行进行匹配
+
+  - Delete lines matching the line pattern:
+    sed '/line_pattern/d' filename  # 匹配特定行删除
+    
+# q [EXIT-CODE]打印到11行，然后退出。 Exit 'sed' without processing any more commands or input.
+  - Print the first 11 lines of a file:
+    sed 11q filename
+# 对 filename 连续进行量词操作。 -e 可 与 -f 等效，如下
+  - Apply multiple find-replace expressions to a file:
+    sed -e 's/find/replace/' -e 's/find/replace/' filename
+    
+    echo 's/find/replace/' > file1.sed
+    echo  's/find/replace/' > file2.sed
+    sed -f file1.sed -f file2.sed filename
+
+# 特此看情况下，s/ / / ，可把/替换为其他字符
+  - Replace separator / by any other character not used in the find or replace patterns, e.g., #:
+    sed 's#find#replace#' filename
+
+
+demo@wsl-3:~$
+```
+
+info sed
+
+```bash
+'#'
+     [No addresses allowed.]
+
+     The '#' character begins a comment; the comment continues until the
+     next newline.
+
+     If you are concerned about portability, be aware that some
+     implementations of 'sed' (which are not POSIX conforming) may only
+     support a single one-line comment, and then only when the very
+     first character of the script is a '#'.
+
+     Warning: if the first two characters of the 'sed' script are '#n',
+     then the '-n' (no-autoprint) option is forced.  If you want to put
+     a comment in the first line of your script and that comment begins
+     with the letter 'n' and you do not want this behavior, then be sure
+     to either use a capital 'N', or place at least one space before the
+     'n'.
+     
+     若表达式写在文件里，且第一行为注释，且#后第一个字母为n, 即#n... ，则，n可能被视位 选择了 -n, 根据情况自行避免。
+     
+     
+     
+'q [EXIT-CODE]'  列印至某行后停止进行
+     Exit 'sed' without processing any more commands or input.
+
+     Example: stop after printing the second line:
+          $ seq 3 | sed 2q
+          1
+          2
+
+     This command accepts only one address.  Note that the current
+     pattern space is printed if auto-print is not disabled with the
+     '-n' options.  The ability to return an exit code from the 'sed'
+     script is a GNU 'sed' extension.
+
+     See also the GNU 'sed' extension 'Q' command which quits silently
+     without printing the current pattern space.
+     
+'d' 删除
+     Delete the pattern space; immediately start next cycle.
+
+     Example: delete the second input line:
+          $ seq 3 | sed 2d  # 删除第二行 。 另如2到5行： 2,5d
+          1
+          3
+
+'p' 列印
+     Print out the pattern space (to the standard output).  This command
+     is usually only used in conjunction with the '-n' command-line
+     option.  # 与 -n 搭配，避免重复输出
+
+     Example: print only the second input line:
+          $ seq 3 | sed -n 2p
+          2
+
+'n'
+     If auto-print is not disabled, print the pattern space, then,
+     regardless, replace the pattern space with the next line of input.
+     If there is no more input then 'sed' exits without processing any
+     more commands.
+
+     This command is useful to skip lines (e.g.  process every Nth
+     line).
+
+     Example: perform substitution on every 3rd line (i.e.  two 'n'
+     commands skip two lines):  两个n 标势把 . 所匹配内容替换成 x，如此进行
+          $ seq 6 | sed 'n;n;s/./x/'
+          1
+          2
+          x
+          4
+          5
+          x
+
+     GNU 'sed' provides an extension address syntax of FIRST~STEP to
+     achieve the same result:
+
+          $ seq 6 | sed '0~3s/./x/'
+          1
+          2
+          x
+          4
+          5
+          x
+
+'{ COMMANDS }'
+     A group of commands may be enclosed between '{' and '}' characters.
+     This is particularly useful when you want a group of commands to be
+     triggered by a single address (or address-range) match.
+
+     Example: perform substitution then print the second input line:
+          $ seq 3 | sed -n '2{s/2/X/ ; p}'
+          X
+
+
+'y/SOURCE-CHARS/DEST-CHARS/'  字符一对一转换，类似于 tr   
+     Transliterate any characters in the pattern space which match any
+     of the SOURCE-CHARS with the corresponding character in DEST-CHARS.
+
+     Example: transliterate 'a-j' into '0-9':
+          $ echo hello world | sed 'y/abcdefghij/0123456789/'
+          74llo worl3
+
+     (The '/' characters may be uniformly replaced by any other single
+     character within any given 'y' command.)
+
+     Instances of the '/' (or whatever other character is used in its
+     stead), '\', or newlines can appear in the SOURCE-CHARS or
+     DEST-CHARS lists, provide that each instance is escaped by a '\'.
+     The SOURCE-CHARS and DEST-CHARS lists _must_ contain the same
+     number of characters (after de-escaping).
+
+     See the 'tr' command from GNU coreutils for similar functionality.
+
+
+'a','c','i' (append/change/insert)
+
+'a TEXT' 在指定行后添加 'i TEXT' 是在前一行添加。
+  a后的空被忽略，如需，可转义 '\ '
+     Appending TEXT after a line.  This is a GNU extension to the
+     standard 'a' command - see below for details.
+
+     Example: Add the word 'hello' after the second line:
+          $ seq 3 | sed '2a hello'
+          1
+          2
+          hello
+          3
+
+ As a GNU extension, this command accepts two addresses.
+
+     Escape sequences in TEXT are processed, so you should use '\\' in
+     TEXT to print a single backslash.
+
+     The commands resume after the last line without a backslash ('\') -
+     'world' in the following example:  添加内容可分成几行
+          $ seq 3 | sed '2a\
+          hello\
+          world
+          3s/./X/'
+          -|1
+          -|2
+          -|hello
+          -|world
+          -|X
+
+     As a GNU extension, the 'a' command and TEXT can be separated into
+     two '-e' parameters, enabling easier scripting: 
+          $ seq 3 | sed -e '2a\' -e hello
+          1
+          2
+          hello
+          3
+
+          $ sed -e '2a\' -e "$VAR" 添加内容可分离出来单独设置为变量。
+
+
+demo@wsl-72:~$ seq 10 | sed '2,9c hello'  # c 取代，2~9行整体取代
+1
+hello
+10
+demo@wsl-73:~$ seq 10 | sed '2,9s/.*/hello/g'  按行取代
+1
+hello
+hello
+hello
+hello
+hello
+hello
+hello
+hello
+10
+demo@wsl-74:~$
+
+     $ seq 6 | sed '1d  #删除不连续的指定行
+     3d
+     5d'
+     2
+     4
+     6
+     
+     $ seq 6 | sed -e 1d -e 3d -e 5d
+     2
+     4
+     6
+
+
+     $ seq 6 | sed -e 1d -e 3d -e 5d
+     2
+     4
+     6
+
+
+
+# sed 'function1
+function2'
+
+# sed -e function1 -e function2
+sed -e 'function1' -e 'function2'
+
+如若涉及到特定行，则是一句初始文件的行的编号而定
+
+'a','c','i' (append/change/insert)
+
+     All characters following 'a','c','i' commands are taken as the text
+     to append/change/insert.  Using a semicolon leads to undesirable
+     results:
+
+          $ seq 2 | sed '1aHello ; 2d'
+          1
+          Hello ; 2d
+          2
+
+     Separate the commands using '-e' or a newline:
+
+          $ seq 2 | sed -e 1aHello -e 2d
+          1
+          Hello
+
+          $ seq 2 | sed '1aHello
+          2d'
+          1
+          Hello
+
+     Note that specifying the text to add ('Hello') immediately after
+     'a','c','i' is itself a GNU 'sed' extension.  A portable,
+     POSIX-compliant alternative is:
+
+          $ seq 2 | sed '1a\
+          Hello
+          2d'
+          1
+          Hello
+
+
+  The following examples are all equivalent.  They perform two 'sed'
+operations: deleting any lines matching the regular expression '/^foo/',
+and replacing all occurrences of the string 'hello' with 'world':
+
+     sed '/^foo/d ; s/hello/world/' input.txt > output.txt
+
+     sed -e '/^foo/d' -e 's/hello/world/' input.txt > output.txt
+
+     echo '/^foo/d' > script.sed
+     echo 's/hello/world/' >> script.sed
+     sed -f script.sed input.txt > output.txt
+
+     echo 's/hello/world/' > script2.sed
+     sed -e '/^foo/d' -f script2.sed input.txt > output.txt
+
+
+3.3 The 's' Command
+===================
+
+The 's' command (as in substitute) is probably the most important in
+'sed' and has a lot of different options.  The syntax of the 's' command
+is 's/REGEXP/REPLACEMENT/FLAGS'.
+
+The 's' command can be followed by zero or more of the following
+FLAGS:
+
+'g'
+     Apply the replacement to _all_ matches to the REGEXP, not just the
+     first.
+
+'NUMBER'
+     Only replace the NUMBERth match of the REGEXP.
+
+
+
+sed '1,5s/$/ F F F/g' 在1-5行行内末尾添加内容 
+
+
 ```
 
 
