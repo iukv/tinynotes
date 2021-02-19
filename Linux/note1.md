@@ -453,7 +453,88 @@ demo@wsl-42:~$
 [vbird](https://linux.vbird.org/linux_basic/centos7/0320bash.php#pipe:~:text=10.6.6%20%E5%8F%83%E6%95%B8,%E6%8F%9B%EF%BC%9A%20xargs)
 
 
+
+## grep 进阶
+
+···
+--color=auto 会匹配结果会显示颜色
+
+dmesg | grep -n -A3 -B2 --color=auto 'qxl'
+匹配结果及其后三行前两行，并显示颜色
+···
+
+```bash
+grep 搜做内容表达式示例
+
+特定字串
+'the'
+'t[ae]st'
+
+集和字元
+'oo'
+'[^g]oo'
+ '[^a-z]oo'
+ 
+ '[0-9]'
+ '[^[:lower:]]oo'
+ 
+ 行首行尾
+'^the'
+'^[a-z]'
+'^[[:lower:]]'
+'^[^a-zA-Z]'
+'\.$'  行尾的点
+'^$'  空行
+
+'o\{2\}' 搜索oo
+'go\{2,5\}g'  2~5个o
+'go\{2,\}g'
+
 ```
 
+RE [字符汇总](https://linux.vbird.org/linux_basic/centos7/0330regularex.php#sed:~:text=11.2.4%20%E5%9F%BA%E7%A4%8E%E6%AD%A3%E8%A6%8F,%E5%AD%97%E7%AC%A6%E5%BD%99%E6%95%B4%20(characters))
+
+```
+基础的 用grep
+^word
+word$
+.
+\
+*
+[list]
+[n1-n2]
+[^list]
+\{n,m\}
+
+扩展的 用 egrep 或 grep -E
++
+?
+|
+()     # egrep -n 'g(la|oo)d' regular_express.txt
+()+    #echo 'AxyzxyzxyzxyzC' | egrep 'A(xyz)+C'
+
+
+
+# 搜索特殊字符的转义 grep 和 egrep 的特殊字符是不同的。是否需要看情况。
+  .*[]搜索字面内容要转义
+  {} 用来限定范围要转义。搜索其字面意思不用转义。
+
+  （ grep 不需要转义，egrep 需要 ……
+
+  ！ 和 > 不需要转义
+  grep -n '[!>]' regular_express.txt
+
+```
+
+选项
+```bash
+-i
+-v
+-n
+-c 输出匹配到的个数
+-a 將 binary 檔案以 text 檔案的方式搜尋資料
+-H 行首显示文件
+--color=auto 突出显示匹配结果
+```
 
 
