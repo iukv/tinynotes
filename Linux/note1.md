@@ -154,6 +154,15 @@ demo@wsl-1:~$ tldr sort
 demo@wsl-2:~$
 ```
 
+```bash
+sort file1 -o file1  可以
+sort file1 -o file2 可以
+sort file1 > file 不可以，file里的内容是空的
+```
+
+
+
+
 ## uniq 
 
 ```bash
@@ -230,6 +239,14 @@ demo@wsl-18:~$ tldr wc | wc ; tldr wc | wc -l; tldr wc | wc -w ; tldr wc | wc -c
 371
 demo@wsl-19:~$
 ```
+
+```bash
+wc -l file1
+wc -l <file1 
+是不同的
+```
+
+
 
 ## tee
 
@@ -884,5 +901,41 @@ sed '1,5s/$/ F F F/g' 在1-5行行内末尾添加内容
 
 
 ```
+
+```bash
+sed "3cabcdefg" #把第三行取代为abcdefg
+
+# 盲目的 行取代 ：指定一行，连续行，全部行 的取代
+    # 默认把所有n行取代为n行fish     n to n
+      sed cfish animals.txt 
+      sed 'c fish' animals.txt
+      
+    #指定续行  n to 1
+      sed 2,4cfish animals.txt # 把2-4三行取代为一行fish
+      sed '2,4c fish' animals
+      
+      # n to n
+      sed '2,4s/.*/fish/g' animals.txt #按行取代2-4行
+      
+      # 匹配替换， n to n
+      sed /fish/cfishhhhhh animals.txt 把含有fish的行替换为 fishhhhhh
+
+
+sed /fish/d animals.txt # 删除含有fish的行
+
+
+sed 3d animals.txt # 删除第三行
+
+sed /fish/s/fi/di/ animals # 含有fish的行中，fi 替换为di
+
+sed
+
+
+
+
+```
+
+
+## awk
 
 
